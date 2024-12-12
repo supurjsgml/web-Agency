@@ -1,0 +1,14 @@
+image: node:14
+
+stages:
+  - deploy
+
+deploy:
+  stage: deploy
+  script:
+    - curl https://cli-assets.heroku.com/install.sh | sh
+    - heroku container:login
+    - heroku container:push web -a [web-agency]
+    - heroku container:release web -a [web-agency]
+  only:
+    - main
