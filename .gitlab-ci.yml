@@ -6,7 +6,7 @@ services:
 variables:
   DOCKER_HOST: tcp://docker:2375
   DOCKER_TLS_CERTDIR: ""
-  HEROKU_API_KEY: "2b296b0a-6426-4421-aee0-bed92b411396"
+  # HEROKU_API_KEY: "key"
 
 stages:
   - deploy
@@ -22,10 +22,12 @@ before_script:
 deploy:
   stage: deploy
   script:
+    # Heroku CLI 로그인
+    - export HEROKU_API_KEY=$HEROKU_API_KEY
+    # - echo $HEROKU_API_KEY
+    - heroku container:login
     # Docker 이미지 빌드
     - docker build -t registry.heroku.com/web-agency/web .
-    # Heroku CLI 로그인
-    - heroku container:login
     # Docker 이미지 푸시
     - docker push registry.heroku.com/web-agency/web
     # Heroku 배포
