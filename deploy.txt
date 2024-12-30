@@ -1,0 +1,6 @@
+docker build -t registry.heroku.com/web-agency/web .
+docker push registry.heroku.com/web-agency/web
+heroku container:release web -a web-agency
+
+
+docker run -d -p 3000:3000 registry.heroku.com/web-agency/web

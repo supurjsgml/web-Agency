@@ -1,0 +1,34 @@
+image: node:20-slim
+
+services:
+  - docker:dind
+
+variables:
+  DOCKER_HOST: tcp://docker:2375
+  DOCKER_TLS_CERTDIR: ""
+  HEROKU_API_KEY: "2b296b0a-6426-4421-aee0-bed92b411396"
+
+stages:
+  - deploy
+
+before_script:
+  # 필수 패키지 설치
+  - apt-get update && apt-get install -y curl bash docker.io
+  # Heroku CLI 설치
+  - curl https://cli-assets.heroku.com/install.sh | sh
+  - heroku --version
+  - docker --version
+
+deploy:
+  stage: deploy
+  script:
+    # Docker 이미지 빌드
+    - docker build -t registry.heroku.com/web-agency/web .
+    # Heroku CLI 로그인
+    - heroku container:login
+    # Docker 이미지 푸시
+    - docker push registry.heroku.com/web-agency/web
+    # Heroku 배포
+    - heroku container:release web -a web-agency
+  only:
+    - master
